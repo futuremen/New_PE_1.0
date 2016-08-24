@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.ScoreDao">
+
+
+
+	<resultMap type="com.hist.pe.entity.Score" id="scoreInfo">
+		<id column="id" property="id" />
+		<result column="student_id" property="student_id" />
+		<result column="weight" property="weight" />
+		<result column="height" property="height" />
+		<result column="endurance" property="endurance" />
+		<result column="pullups_situps" property="pullups_situps" />
+		<result column="standingleap" property="standingleap" />
+		<result column="sitreach" property="sitreach" />
+		<result column="dash" property="dash" />
+		<result column="lung" property="lung" />
+		<result column="sunScore" property="sunScore" />
+		<result column="onlineScore" property="onlineScore" />
+		<result column="term_id" property="term_id" />
+	</resultMap>
+
+
+
+
+	<resultMap type="com.hist.pe.entity.WarpForScore" id="stuentScoreInfo">
+		<id column="sb.id" property="id" />
+
+
+		<result column="sb.weight" property="weight" />
+		<result column="sb.height" property="height" />
+		<result column="sb.endurance" property="endurance" />
+		<result column="sb.pullups_situps" property="pullups_situps" />
+		<result column="sb.standingleap" property="standingleap" />
+		<result column="sb.sitreach" property="sitreach" />
+		<result column="sb.dash" property="dash" />
+		<result column="sb.lung" property="lung" />
+		<result column="sb.term_id" property="term_id" />
+		<result column="student.account" property="studentAccount" />
+		<result column="student.id" property="student_id" />
+		<result column="student.name" property="name" />
+	</resultMap>
+	<sql id="studentScoreColumns">
+		sb.id,
+
+		sb.weight,
+		sb.height,
+		sb.endurance,
+		sb.pullups_situps,
+		sb.standingleap,
+		sb.sitreach,
+		sb.dash,
+		sb.lung,
+		sb.term_id,
+		s.id AS 'student.id',
+		s.c_account AS
+		'student.account',
+		s.c_name as 'student.name'
+
+	</sql>
+	<select id="getClassStudentScore" resultMap="stuentScoreInfo">
+		SELECT
+		<include refid="studentScoreColumns"></include>
+		FROM t_student s
+		LEFT JOIN t_class c ON c.id= s.`c_classId`
+		LEFT JOIN student_bizhao sb ON sb.`student_id` = s.`id`
+		LEFT JOIN t_term t ON t.id = sb.`term_id`
+		WHERE t.id=#{term_id} AND c.`id`=#{class_id}
+
+
+	</select>
+
+
+	<sql id="scoreColumns">
+
+		c.id,
+		student_id,
+		weight,
+		height,
+		endurance,
+		pullups_situps,
+		standingleap,
+		sitreach,
+		dash,
+		lung,
+		sunScore,
+		onlineScore,
+		term_id
+
+	</sql>
+
+
+	<select id="getClssScoreByPage" resultMap="scoreInfo">
+		SELECT
+		<include refid="scoreColumns"></include>
+		FROM t_physique_score c
+		<if test="studentClass_id != null">
+			LEFT JOIN
+			t_student s
+			ON
+
+			s.`id` = c.`student_id`
+			LEFT JOIN
+			t_class a
+			ON
+			a.id=s.`c_classId`
+
+			WHERE a.id = #{studentClass_id}
+		</if>
+
+		<if test="term_id !=null">
+			AND c.term_id=#{term_id}
+		</if>
+		<if test="top != null and pageSize != null">
+			LIMIT #{top},#{pageSize}
+
+		</if>
+
+	</select>
+
+
+	<select id="getStudentScoreByPage" resultMap="scoreInfo">
+		SELECT
+		<include refid="scoreColumns"></include>
+		FROM student_bizhao c
+		<if test="student_id != null">
+
+
+			WHERE c.student_id = #{student_id}
+		</if>
+
+		<if test="term_id !=null">
+			AND c.term_id=#{term_id}
+		</if>
+		<if test="top != null and pageSize != null">
+			LIMIT #{top},#{pageSize}
+
+		</if>
+
+	</select>
+
+
+
+	<select id="getOriginalStudentScoreByPage" resultMap="scoreInfo">
+		SELECT
+		<include refid="scoreColumns"></include>
+		FROM student_bizhao c
+		<if test="student_id != null">
+
+
+			WHERE c.student_id = #{student_id}
+		</if>
+
+		<if test="term_id !=null">
+			AND c.term_id=#{term_id}
+		</if>
+		<if test="top != null and pageSize != null">
+			LIMIT #{top},#{pageSize}
+
+		</if>
+
+	</select>
+
+
+	<select id="getCount" resultType="int">
+		SELECT COUNT(1) FROM
+		v_studentClas_score
+
+	</select>
+
+	<select id="get" resultMap="scoreInfo">
+		SELECT
+		<include refid="scoreColumns"></include>
+		FROM student_bizhao c
+		WHERE id = #{id}
+
+
+	</select>
+
+
+
+	<select id="getReallyScore" statementType="CALLABLE">
+
+		CALL p_calculate()
+
+	</select>
+	
+	
+	
+
+
+
+
+
+	<update id="update">
+		UPDATE student_bizhao SET
+		flag=1,
+		student_id
+		=#{student_id},
+		weight =#{weight},
+		height =#{height},
+		endurance
+		=#{endurance},
+		pullups_situps =#{pullups_situps},
+		standingleap
+		=#{standingleap},
+		sitreach =#{sitreach},
+		dash =#{dash},
+		lung =#{lung},
+		onlineScore =#{onlineScore},
+		sunScore =#{sunScore}
+
+
+		WHERE id = #{id}
+
+	</update>
+	
+	
+	
+	<update id="updateOnlineScore">
+		UPDATE student_bizhao SET
+		
+		onlineScore =#{onlineScore}
+		
+
+
+		WHERE id = #{score_id}
+
+	</update>
+
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO student_bizhao (
+
+		flag,
+		student_id,
+		weight,
+		height,
+		endurance,
+		pullups_situps,
+		standingleap,
+		sitreach,
+		dash,
+		lung,
+		term_id,
+		onlineScore,
+		sunScore 
+
+		)VALUES(
+		0,
+		#{student_id},
+		#{weight},
+		#{height},
+		#{endurance},
+		#{pullups_situps},
+		#{standingleap},
+		#{sitreach},
+		#{dash},
+		#{lung},
+		#{term_id},
+        #{onlineScore},
+	    #{sunScore}
+		)
+
+
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+	<insert id="insertOnlineScore" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO student_bizhao (
+
+		onlineScore,
+		term_id,
+		student_id
+
+		)VALUES(
+	
+		#{onlineScore},
+		#{term_id},
+		#{student_id}
+
+		)
+
+
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<delete id="delete">
+		DELETE FROM student_bizhao WHERE
+		id=#{id}
+
+	</delete>
+
+</mapper>

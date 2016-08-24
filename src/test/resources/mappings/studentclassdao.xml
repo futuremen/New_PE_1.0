@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.StudentClassDao">
+	<resultMap type="com.hist.pe.entity.StudentClass" id="studentClass">
+		<id column="class.id" property="id" />
+		<result column="class.name" property="name" />
+		<result column="class.num" property="number" />
+		<result column="class.major" property="major" />
+		<result column="class.institute_id" property="institute_id" />
+	</resultMap>
+
+
+	<resultMap type="com.hist.pe.entity.StudentClass" id="classInfo">
+		<id column="class.id" property="id" />
+		<result column="class.name" property="name" />
+		<result column="class.num" property="number" />
+		<result column="class.major" property="major" />
+
+
+		<association property="institute" javaType="com.hist.pe.entity.Institute">
+			<id column="institute.id" property="id" />
+			<result column="institute.name" property="instituteName" />
+
+		</association>
+
+		<collection property="students" ofType="com.hist.pe.entity.Student">
+			<id column="student.id" property="id" />
+			<result column="student.account" property="studentAccount" />
+			<result column="student.IDcard" property="idcard" />
+			<result column="student.tel" property="tel" />
+			<result column="student.email" property="email" />
+			<result column="student.qq" property="qq" />
+			<result column="student.address" property="adress" />
+			<result column="student.name" property="name" />
+			<result column="student.age" property="age" />
+			<result column="student.sex" property="sex" />
+			<result column="student.photo" property="photo" />
+			<result column="student.remarks" property="remarks" />
+		</collection>
+
+
+	</resultMap>
+
+
+
+
+
+
+	<sql id='classInfo'>
+		c.id AS 'class.id',
+		c.name AS 'class.name',
+		c.number AS
+		'class.num',
+		c.major AS 'class.major',
+
+
+		i.id AS 'institute.id',
+		i.c_name
+		AS 'institute.name',
+		s.id AS 'student.id',
+		s.c_account
+		AS'student.account',
+		s.c_IDcard AS'student.IDcard',
+		s.c_tel
+		AS'student.tel',
+		s.c_email
+		AS'student.email',
+		s.c_qq AS'student.qq',
+		s.c_address
+		AS'student.address',
+		s.c_name AS'student.name',
+		s.c_age
+		AS'student.age',
+		s.c_sex AS'student.sex',
+		s.c_photo AS'student.photo',
+		s.c_classId
+		AS'student.classId',
+		s.c_remarks AS'student.remarks'
+
+	</sql>
+	<sql id="baseClass">
+		c.id AS 'class.id',
+		c.name AS 'class.name',
+		c.number AS
+		'class.num',
+		c.major AS 'class.major',
+		c.institute_id as 'class.institute_id'
+	</sql>
+
+	<select id="get" parameterType="java.lang.String" resultMap="studentClass">
+		SELECT
+		<include refid="baseClass"></include>
+		FROM t_class c
+		WHERE id=#{id}
+	</select>
+
+	<select id="getAllClass" resultMap="studentClass">
+		SELECT
+		<include refid="baseClass"></include>
+		FROM t_class c
+
+	</select>
+
+
+
+    <select id="setTeacher" >
+		update into t_teacher_class values (#{teacher_id},#{class_id})
+	</select>
+	
+	
+
+
+
+
+
+
+
+
+
+
+	<select id="getInstituteClassByPage" resultMap="studentClass">
+		SELECT
+		<include refid="baseClass"></include>
+		FROM t_class c
+		<if test="institute_id!=null">
+
+			WHERE c.institute_id=#{institute_id}
+		</if>
+		<if test="top != null and pageSize != null">
+			LIMIT #{top},#{pageSize}
+
+		</if>
+
+
+	</select>
+
+
+	<select id="getTeacherClsaaByPage" resultMap="studentClass">
+		SELECT
+		<include refid="baseClass"></include>
+		FROM t_class c
+		<if test="teacher_id!=null">
+
+			LEFT JOIN
+			`t_teacher_class` a
+			ON
+			a.`class_id`=c.`id`
+			LEFT JOIN
+			t_teacher b
+			ON
+			b.id=a.`teacher_id`
+
+			WHERE b.id=#{teacher_id}
+		</if>
+		<if test="top != null and pageSize != null">
+			LIMIT #{top},#{pageSize}
+
+		</if>
+
+
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<select id="getCount" resultType="int">
+		SELECT
+		<if test="institute != null and institute.id!=null and institute.id !='' ">
+			claszzs FROM v_teacher_studentclass_num
+			where
+			id=#{institute.id}
+
+		</if>
+		<if test="institute == null ">
+			COUNT(1) FROM t_institute
+		</if>
+
+
+
+	</select>
+
+
+	<!-- <select id="getInstituteClass" resultMap="classInfo"> SELECT <include 
+		refid="classInfo"></include> FROM t_class c LEFT JOIN t_institute i ON i.`c_number` 
+		= c.`institute_id` LEFT JOIN t_student s ON s.c_classId = c.number where 
+		i.id=#{id} </select> -->
+
+	<insert id="insert">
+		INSERT INTO t_class (
+		name,
+		institute_id,
+		major,
+		number
+		) VALUES
+		(
+		#{name},
+		#{institute_id},
+		#{major},
+		#{number}
+
+		)
+
+
+
+	</insert>
+	<delete id="delete">
+		DELETE FROM t_class WHERE id=#{id}
+
+	</delete>
+	<update id="update">
+		UPDATE t_class SET
+
+		name=#{name},
+		number=#{number},
+		major=#{major},
+		institute_id=#{institute_id}
+
+		WHERE id=#{id}
+
+	</update>
+
+
+
+
+
+</mapper>

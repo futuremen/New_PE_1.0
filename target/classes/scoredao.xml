@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.ScoreDao">
+
+
+
+	<resultMap type="com.hist.pe.entity.Score" id="scoreInfo">
+		<id column="id" property="id" />
+
+		<result column="student_id" property="student_id" />
+		<result column="weight" property="weight" />
+		<result column="height" property="height" />
+		<result column="endurance" property="endurance" />
+		<result column="pullups_situps" property="pullups_situps" />
+		<result column="standingleap" property="standingleap" />
+		<result column="sitreach" property="sitreach" />
+		<result column="dash" property="dash" />
+		<result column="lung" property="lung" />
+		<result column="term_id" property="term_id" />
+		
+	
+	</resultMap>
+	<sql id="scoreColumns">
+	    id,
+		student_id,
+		weight,
+		height,
+		endurance,
+		pullups_situps,
+		standingleap,
+		sitreach,
+		dash,
+		lung,
+		term_id
+
+	</sql>
+
+
+	<select id="getClssScoreByPage" resultMap="scoreInfo">
+		SELECT
+		<include refid="scoreColumns"></include>
+		FROM t_physique_score c
+		<if test="studentClass_id != null">
+			LEFT JOIN
+			t_student s
+			ON
+
+			s.`id` = c.`student_id`
+			LEFT JOIN
+			t_class a
+			ON
+			a.id=s.`c_classId`
+
+			WHERE a.id = #{studentClass_id} 
+		</if>
+		
+		<if test="term_id !=null">
+		AND c.term_id=#{term_id}
+		</if>
+		<if test="top != null and pageSize != null">
+			LIMIT #{top},#{pageSize}
+
+		</if>
+		
+		</select>
+		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		<select id="getStudentScoreByPage" resultMap="scoreInfo">
+		SELECT
+		<include refid="scoreColumns"></include>
+		FROM t_physique_score c
+		<if test="student_id != null">
+		    
+
+			WHERE c.student_id = #{student_id} 
+		</if>
+		
+		<if test="term_id !=null">
+		AND c.term_id=#{term_id}
+		</if>
+		<if test="top != null and pageSize != null">
+			LIMIT #{top},#{pageSize}
+
+		</if>
+
+	</select>
+	
+	
+	
+			<select id="getOriginalStudentScoreByPage" resultMap="scoreInfo">
+		SELECT
+		<include refid="scoreColumns"></include>
+		FROM student_bizhao c
+		<if test="student_id != null">
+		    
+
+			WHERE c.student_id = #{student_id} 
+		</if>
+		
+		<if test="term_id !=null">
+		AND c.term_id=#{term_id}
+		</if>
+		<if test="top != null and pageSize != null">
+			LIMIT #{top},#{pageSize}
+
+		</if>
+
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="getCount" resultType="int">
+		SELECT COUNT(1) FROM
+		v_studentClas_score
+
+	</select>
+
+	<select id="get" resultMap="scoreInfo">
+		SELECT
+		<include refid="scoreColumns"></include>
+		FROM t_score
+		WHERE id = #{id}
+
+
+	</select>
+	
+	
+	
+	
+	
+	<select id="getReallyScore" statementType="CALLABLE">
+	
+		CALL p_calculate()
+
+	</select>
+	
+	
+
+
+
+	<update id="update">
+		UPDATE student_bizhao SET
+		flag=1,
+		student_id =#{student_id},
+		weight =#{weight},
+		height =#{height},
+		endurance =#{endurance},
+		pullups_situps =#{pullups_situps},
+		standingleap =#{standingleap},
+		sitreach =#{sitreach},
+		dash =#{dash},
+		lung =#{lung},
+		term_id =#{term_id}
+
+
+		WHERE id = #{id}
+
+	</update>
+
+
+	<insert id="insert">
+		INSERT INTO student_bizhao (
+		
+		flag,
+		student_id,
+		weight,
+		height,
+		endurance,
+		pullups_situps,
+		standingleap,
+		sitreach,
+		dash,
+		lung,
+		term_id
+
+		)VALUES(
+       0,
+		#{student_id},
+		#{weight},
+		#{height},
+		#{endurance},
+		#{pullups_situps},
+		#{standingleap},
+		#{sitreach},
+		#{dash},
+		#{lung},
+		#{term_id}
+
+		)
+
+
+	</insert>
+	<delete id="delete">
+		DELETE FROM t_score WHERE
+		id=#{id}
+
+	</delete>
+
+</mapper>

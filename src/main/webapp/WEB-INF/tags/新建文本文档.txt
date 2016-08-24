@@ -1,0 +1,22 @@
+		<td><input type="text" name="id" value="${fns:getOneStudent(score.student_id).id}"></td>
+		
+		
+		
+		<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+		
+		
+		<%@ taglib prefix="fns" uri="/WEB-INF/tags/fns.tld" %>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<%@ page language="java" import="java.util.*" pageEncoding="gbk"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fns" uri="/WEB-INF/tags/fns.tld" %>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.ScoreMapper">
+	<insert id="save" parameterType="Score">
+		insert into score(user_id,examPage_id,final_score)
+		values(#{user.id},#{examPage.id},#{final_score})
+	</insert>
+	<select id="getScoreByUserId" resultMap="getScore"
+		parameterType="Long">
+		select *from score s , examPage ex ,user u where s.examPage_id = ex.ex_id and
+		s.user_id = u.u_id and s.user_id = #{id}
+	</select>
+	<resultMap type="Score" id="getScore">
+		<id property="id" column="sc_id" />
+		<result property="final_score" column="final_score" />
+		<association property="user" javaType="Student" column="user_id">
+			<id property="id" column="u_id" />
+			<result property="studentNum" column="u_studentNumber" />
+			<result property="name" column="u_name" />
+		</association>
+			
+		<association property="examPage" javaType="ExamPage" column="examPage_id">
+			<id property="id" column="ex_id" />
+			<result property="name" column="ex_name" />
+			<result property="examTime" column="examTime"/>
+		</association>
+	</resultMap>
+	
+	<select id="findAllScoreByExamPageId" parameterType="Long" resultMap="getScore">
+		select *from score s , examPage ex ,user u where s.examPage_id = ex.ex_id and s.user_id = u.u_id and s.examPage_id = #{id} order by final_score DESC
+	</select>
+	<!-- 得到所有的记录条数 -->
+	<select id="getCount" resultType="Integer">
+	select count(*) from score
+	</select>
+	
+	<!-- 分页的实现 -->
+	<!-- <select id="getList" parameterType="Page" resultType="Score">
+	select sc_id AS id, sc_name AS name, user_id AS user.id, examPage_id AS examPage.id , final_score as final_score from scroe order by final_score desc limit #{dbIndex}, #{dbNumber}
+	</select> -->
+	
+</mapper>

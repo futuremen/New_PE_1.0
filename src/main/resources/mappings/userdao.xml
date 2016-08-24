@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.UserDao">
+	<resultMap type="com.hist.pe.entity.User" id="UserInfo">
+
+
+		<association property="teacher" javaType="com.hist.pe.entity.Teacher">
+			<id 	column="teacher.id" property="id"/>
+			<id column="teacher.account" property="account" />
+			<id column="teacher.password" property="password" />
+			<result column="teacher.name" property="name" />
+			<result column="teacher.sex" property="sex" />
+			<result column="teacher.roleids" property="roleids" />
+		</association>
+
+		<association property="student" javaType="com.hist.pe.entity.Student">
+			<id 	column="student.id" property="id"/>
+			<result column="student.account" property="studentAccount" />
+			<result column="student.password" property="password" />
+			<result column="student.IDcard" property="idcard" />
+			<result column="student.tel" property="tel" />
+			<result column="student.email" property="email" />
+			<result column="student.qq" property="qq" />
+			<result column="student.address" property="adress" />
+			<result column="student.name" property="name" />
+			<result column="student.age" property="age" />
+			<result column="student.sex" property="sex" />
+			<result column="student.photo" property="photo" />
+			<result column="student.classId" property="class_id" />
+			<result column="student.c_remarks" property="remarks" />
+	     	<result column="student.role_id" property="role_id" />
+			<result column="student.order_id" property="order_id" />
+		</association>
+
+
+
+
+
+
+
+
+	</resultMap>
+
+	<sql id="userColumns">
+		t.id AS 'teacher.id',
+		t.account AS 'teacher.account',
+		t.password AS 'teacher.password',
+		t.name AS
+		'teacher.name',
+		t.sex AS 'teacher.sex',
+		t.roleids AS 'teacher.roleids',
+		
+
+
+		s.id AS 'student.id',
+		s.c_password AS 'student.password',
+		s.c_account AS'student.account',
+		s.c_IDcard AS'student.IDcard',
+		s.c_tel AS'student.tel',
+		s.c_email
+		AS'student.email',
+		s.c_qq AS'student.qq',
+		s.c_address
+		AS'student.address',
+		s.c_name AS'student.name',
+		s.c_age AS'student.age',
+		s.c_sex AS'student.sex',
+		s.c_photo AS'student.photo',
+		s.c_classId
+		AS'student.classId',
+		s.c_remarks AS'student.remarks',
+		s.c_roleids AS
+		'student.role_id',
+		s.c_orderid AS
+		'student.order_id'
+
+	</sql>
+
+
+
+
+
+
+	<select id="getUser" parameterType="java.lang.String"
+		resultMap="UserInfo">
+		SELECT
+		<include refid="userColumns"></include>
+		FROM t_teacher t
+		LEFT JOIN t_student s ON t.`account` =s.`c_account`
+		WHERE t.`account`=#{account}
+		UNION
+		SELECT 
+		<include refid="userColumns"></include>
+		FROM t_teacher t
+		RIGHT JOIN t_student s ON t.`account` =s.`c_account`
+		WHERE s.`c_account`=#{account}
+		</select>
+
+</mapper>

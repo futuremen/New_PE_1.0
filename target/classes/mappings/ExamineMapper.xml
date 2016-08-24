@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.ExamineMapper">
+    
+	<select id="getAllExampages" resultMap="getExamPage">
+		select *from exampage e where e.ex_id is not null
+	</select>
+	
+	<select id="getExamPageById" resultMap="getExamPage" parameterType="Long" >
+		select *from exampage where ex_id = #{id}
+	</select>
+	<resultMap type="ExamPage" id="getExamPage">
+		<id property="id" column="ex_id"/>
+		<result property="name" column="ex_name"/>
+		<result property="description" column="description"/>
+		<result property="examTime" column="examTime"/>
+		<result property="total_score" column="total_score"/>
+	</resultMap>
+	
+	 <!--分页查询  -->
+    <select id="getExamPageByPage" parameterType="PageBean" resultMap="getExamPage">
+		select*from exampage e limit #{top},#{pageSize}       
+    </select>
+	
+	<!--生成的试卷  -->
+	<insert id="addExamPage" parameterType="ExamPage" >
+		insert into exampage (ex_id,ex_name,ex_description,examTime,total_score,ex_degreeid,questionnumber) values(#{id},#{name},#{description},#{examTime},#{total_score},#{dg.d_id},#{questionnumber});
+		<selectKey resultType="Long" keyProperty="id">
+		    SELECT LAST_INSERT_ID() AS ID
+		</selectKey>	   
+	</insert>
+		
+	
+	<!--删除指定试卷  -->
+	<delete id="deleteExamPageQE" parameterType="int">
+		delete from  question_exampage  where examPage_id=#{id} 
+	</delete>
+	
+	<delete id="deleteExamPageResult" parameterType="int">
+	    delete from result  where examPage_id=#{id}
+	</delete>
+	
+	<delete id="deleteSocre"  parameterType="int">
+	    delete from score  where examPage_id=#{id}
+	</delete>
+	
+	<delete id="deleteExampage" parameterType="int">
+	     delete from exampage where ex_id=#{id}
+	</delete>
+</mapper>

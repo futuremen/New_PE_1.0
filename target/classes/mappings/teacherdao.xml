@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.TeacherDao">
+	<resultMap type="com.hist.pe.entity.Teacher" id="teacher">
+		<id column="teacher.id" property="id" />
+		<result column="teacher.account" property="account" />
+		<result column="teacher.name" property="name" />
+		<result column="teacher.sex" property="sex" />
+		<result column="teacher.institute_id" property="institute_id" />
+	</resultMap>
+
+
+
+
+
+	<sql id="teacherColumns">
+		t.id AS 'teacher.id',
+		t.account AS 'teacher.account' ,
+		t.name AS
+		'teacher.name',
+		t.sex AS 'teacher.sex',
+		t.instituteid AS 'teacher.institute_id'
+	</sql>
+
+
+
+
+
+	
+	<select id="getInstituteTeacherByPage" parameterType="java.util.Map" resultMap="teacher">
+		SELECT
+		<include refid="teacherColumns"></include>
+		FROM t_teacher t
+		<if test="institute_id != null">
+			
+			WHERE t.instituteid=#{institute_id}
+		</if>
+		<if test="top != null and pageSize != null">
+			LIMIT #{top},#{pageSize}
+
+		</if>
+
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="getCount" resultType="int">
+		SELECT
+			<if test="institute != null and institute.id!=null and institute.id !='' "> 
+				teachers FROM v_teacher_studentclass_num
+			  WHERE id=#{institute.id}
+			</if>
+		<if test="institute == null">
+		COUNT(1) FROM t_teacher
+		</if>
+		
+	</select>
+
+	<select id="get" resultMap="teacher">
+		SELECT
+		<include refid="teacherColumns"></include>
+		from t_teacher t
+		where t.id=#{id}
+
+	</select>
+	
+	<select id="getTeachers" parameterType="java.util.Map" resultMap="teacher">
+		SELECT
+		<include refid="teacherColumns"></include>
+		from t_teacher t
+		
+
+	</select>
+
+
+
+	<update id="update">
+		UPDATE t_teacher SET
+		account=#{account},
+		name=#{name},
+		sex=#{sex},
+		password=#{password},
+        instituteid=#{institute_id}
+
+		where id = #{id}
+
+
+
+	</update>
+	
+	
+	<update id="updatePwd">
+		UPDATE t_teacher SET
+		
+		password=#{password}
+      
+
+		where id = #{id}
+
+
+
+	</update>
+
+
+
+	<insert id="insert">
+		INSERT INTO t_teacher (
+		account,
+		name,
+		sex,
+		password,
+		instituteid,
+		roleids
+
+		)VALUES(
+		#{account},
+		#{name},
+		#{sex},
+		#{password},
+        #{institute_id},
+        #{roleids}
+		)
+
+
+	</insert>
+	<delete id="delete">
+		DELETE FROM t_teacher WHERE id=#{id}
+
+	</delete>
+
+</mapper>

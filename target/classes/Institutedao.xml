@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.InstituteDao">
+	<resultMap type="com.hist.pe.entity.Institute" id="instituteInfo">
+		<id column="institute.id" property="id" />
+		<result column="institute.name" property="instituteName" />
+		<result column="institute.number" property="instituteNumber" />
+		<result column="institute.remarks" property="instituteRemarks" />
+
+
+	
+
+	</resultMap>
+	
+	<resultMap type="com.hist.pe.entity.Teacher" id="teacher">
+		<id column="teacher.id" property="id"/>
+		<result column="teacher.account" property="teacherAccount" />
+		<result column="teacher.name" property="name" />
+		<result column="teacher.sex" property="sex" />
+	</resultMap>
+	
+	<resultMap type="com.hist.pe.entity.Institute" id="institute">
+		<id column="institute.id" property="id" />
+		<result column="institute.name" property="instituteName" />
+		<result column="institute.number" property="instituteNumber" />
+		<result column="institute.remarks" property="instituteRemarks" />
+	</resultMap>
+	<sql id="instituteSingle">
+		i.id AS 'institute.id',
+		i.c_number AS 'institute.number',
+		i.c_name AS
+		'institute.name',
+		i.c_remarks AS
+		'institute.remarks'
+	</sql>
+
+	<sql id="instituteColumns">
+		i.id AS 'institute.id',
+		i.c_number AS 'institute.number',
+		i.c_name AS 'institute.name',
+		i.c_remarks AS
+		'institute.remarks',
+		t.id AS 'teacher.id',
+		t.account AS 'teacher.account' ,
+		t.name AS
+		'teacher.name',
+		t.sex AS
+		'teacher.sex',
+		c.id AS 'class.id',
+		c.name AS 'class.name',
+		c.major AS 'class.major',
+		c.`number` AS
+		'class.number'
+	</sql>
+	<sql id="teacherColumns">
+		t.account AS 'teacher.account' ,
+		t.name AS
+		'teacher.name',
+		t.sex AS 'teacher.sex'
+	</sql>
+
+	<select id="getAllInstituteByPage" resultMap="institute">
+		SELECT
+		<include refid="instituteSingle"></include>
+		FROM t_institute i
+		<if test="pageSize != null and top != null">
+			limit #{top},#{pageSize}	
+		</if>
+	</select>
+
+
+	 <select id="get" resultMap="instituteInfo" parameterType="java.lang.String">
+		SELECT
+		<include refid="instituteSingle"></include>
+
+		FROM t_institute i
+		 where 
+		i.id= #{id}
+	</select> 
+
+	
+
+
+	<select id="getCount" resultType="int">
+		SELECT COUNT(1) FROM t_institute
+	</select>
+
+	<insert id="insert">
+		INSERT INTO t_institute(
+
+		c_number,
+		c_name,
+		c_remarks
+
+		)VALUES(
+		#{instituteNumber},
+		#{instituteName},
+		#{instituteRemarks}
+		)
+
+	</insert>
+
+
+	<update id="update">
+
+		UPDATE t_institute SET
+		c_number = #{instituteNumber},
+		c_name=#{instituteName},
+		c_remarks =#{instituteRemarks}
+		WHERE id =#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM t_institute WHERE id =#{id}
+
+	</delete>
+
+</mapper>

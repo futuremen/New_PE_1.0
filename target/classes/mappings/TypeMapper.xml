@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.TypeMapper">
+    <select id="getAlltype" resultMap="gettp">
+        select*from type t where t.t_id is not null
+    </select>
+    <resultMap type="Type" id="gettp">
+        <id property="id" column="t_id"/>
+        <result property="name" column="t_name"/>
+    </resultMap>
+        
+      <!-- write by zhaoshuo -->
+   <select id="findType" parameterType="Integer" resultType="Type">
+    	select t_id AS id, t_name AS name from type where t_id = #{typeId}
+    </select>
+    <!-- 删除类型 -->
+    <delete id="deleteType" parameterType="Integer">
+   	 delete from type where t_id = #{typeId}
+    </delete>
+    <!-- 修改类型 -->
+    <update id="updateType" parameterType="Type">
+    	update type set T_name = #{name} where t_id = #{id}
+    </update>
+    
+</mapper>

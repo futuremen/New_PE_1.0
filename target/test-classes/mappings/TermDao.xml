@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.TermDao">
+	<resultMap type="com.hist.pe.entity.Term" id="term">
+		<id column="term.id" property="id" />
+		<result column="term.start_date" property="start_date" />
+		<result column="term.end_date" property="end_date" />
+		<result column="term.mark" property="mark" />
+		
+		<result column="term.flag" property="flag" />
+	</resultMap>
+
+
+	<sql id="termColumns">
+		id,
+		start_date,
+		end_date,
+		mark,
+		flag
+		
+	</sql>
+
+	<select id="getCurrentTerm" resultMap="term">
+		SELECT
+		<include refid="termColumns"></include>
+		from t_term where flag='1'
+		
+	</select>
+	
+		<select id="get" resultMap="term">
+		SELECT
+		<include refid="termColumns"></include>
+		from t_term where id=#{term_id}
+		
+	</select>
+
+
+
+
+</mapper>

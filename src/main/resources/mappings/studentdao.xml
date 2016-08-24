@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.StudentDao">
+
+
+
+	<resultMap type="com.hist.pe.entity.Student" id="studentInfo">
+		<id column="student.id" property="id"></id>
+		<result column="student.account" property="studentAccount" />
+		<result column="student.password" property="password" />
+		<result column="student.IDcard" property="idcard" />
+		<result column="student.tel" property="tel" />
+		<result column="student.email" property="email" />
+		<result column="student.qq" property="qq" />
+		<result column="student.address" property="adress" />
+		<result column="student.name" property="name" />
+		<result column="student.age" property="age" />
+		<result column="student.sex" property="sex" />
+		<result column="student.photo" property="photo" />	
+		<result column="student.remarks" property="remarks" />
+		<result column="student.class_id" property="class_id" />
+	</resultMap>
+
+
+
+	<sql id="studentColumns">
+
+
+
+        s.c_password as 'student.password',
+		s.id AS 'student.id',
+		s.c_account AS'student.account',
+		s.c_IDcard
+		AS'student.IDcard',
+		s.c_tel
+		AS'student.tel',
+		s.c_email
+		AS'student.email',
+		s.c_qq AS'student.qq',
+		s.c_address
+		AS'student.address',
+		s.c_name
+		AS'student.name',
+		s.c_age
+		AS'student.age',
+		s.c_sex AS'student.sex',
+		s.c_photo AS'student.photo',
+		s.c_classId
+		AS'student.class_id',
+		s.c_remarks AS'student.remarks'
+	</sql>
+
+	<select id="getStudentByOrder" parameterType="java.util.Map" resultMap="studentInfo">
+		SELECT
+		<include refid="studentColumns"></include>
+		FROM t_student s
+		WHERE s.c_orderid=#{order_id}
+		<if test="top != null and pageSize != null">
+			limit #{top},#{pageSize}
+
+		</if>
+		
+	
+	
+	</select>
+
+
+	<update id="updateStudentPwd">
+		UPDATE t_student SET
+		
+		c_password=#{password}
+      
+
+		where id = #{id}
+
+
+
+	</update>
+
+
+
+
+
+
+
+
+
+
+
+	<select id="get" parameterType="java.lang.String" resultMap="studentInfo">
+		SELECT
+		<include refid="studentColumns"></include>
+		FROM t_student s
+		WHERE id=#{id}
+
+	</select>
+	<select id="getUserBySNumAndName" resultMap="studentInfo">
+        	SELECT
+		<include refid="studentColumns"></include>
+		FROM t_student s
+        where u_studentNumber = #{0} and u_name = #{1}
+    </select>
+	
+	
+	
+	
+	
+	
+	<select id="getClassStudentByPage" parameterType="java.util.Map" resultMap="studentInfo">
+		SELECT
+		<include refid="studentColumns"></include>
+		FROM t_student s
+		
+		<if
+			test="studentClass_id != null">
+			where s.c_classId =#{studentClass_id}
+		</if>
+
+
+		<if test="top != null and pageSize != null">
+			limit #{top},#{pageSize}
+
+		</if>
+
+
+
+
+	</select>
+
+	<select id="getStudentByScoreId" resultMap="studentInfo">
+		SELECT 
+		<include refid="studentColumns"></include>
+		FROM t_student s
+		
+		 
+			left join t_score c ON s.id=c.student_id
+    
+             WHERE c.id = #{score_id}
+
+
+
+	</select>
+
+	<select id="getCount" resultType="int">
+		SELECT
+
+		<if
+			test="studentClass != null and studentClass.id !=null and studentClass.id !='' ">
+			students FROM v_student_num
+			WHERE id=#{studentClass.id}
+		</if>
+		<if test="studentClass == null">
+		COUNT(1) FROM t_student
+		</if>
+	</select>
+
+
+
+	<update id="update">
+		UPDATE t_student SET
+		c_password=#{password},
+		c_IDcard = #{idcard},
+		c_tel
+		=#{tel},
+		c_email =#{email},
+		c_qq =#{qq},
+		c_address
+		=#{adress},
+		c_name
+		=#{name},
+		c_age =#{age},
+		c_sex =#{sex},
+		c_photo
+		=#{photo},
+		c_classId
+		=#{class_id},
+		c_remarks =#{remarks},
+		c_account =
+		#{studentAccount},
+		c_orderid=#{order_id}
+		where
+		id=#{id}
+	</update>
+	<update id="updateStudentForOrder">
+	UPDATE t_student SET
+	c_orderid=0
+	
+	WHERE
+			id=#{id}
+	</update>
+
+
+	<insert id="insert">
+		INSERT INTO t_student (
+		c_password,
+		c_account ,
+		c_IDcard ,
+		c_tel,
+		c_email,
+		c_qq ,
+		c_address,
+		c_name ,
+		c_age,
+		c_sex ,
+		c_photo ,
+		c_classId,
+		c_remarks,
+		c_roleids
+
+		)VALUES(
+		#{password},
+		#{studentAccount},
+		#{idcard},
+		#{tel},
+		#{email},
+		#{qq},
+		#{adress},
+		#{name},
+		#{age},
+		#{sex},
+		#{photo},
+		#{class_id},
+		#{remarks},
+		#{role_id}
+
+		)
+
+
+	</insert>
+	<delete id="delete">
+		DELETE FROM t_student WHERE id=#{id}
+
+	</delete>
+	
+
+</mapper>

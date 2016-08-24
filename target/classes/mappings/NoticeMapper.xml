@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+	注意： 与spring整合的时候，namaspace 必须和对应的接口全类名一致
+ -->
+<mapper namespace="com.hist.pe.dao.NoticeMapper">
+	
+	<!-- 增加新数据，id必须和 对应中接口的方法名一致 -->
+	<insert id="save" parameterType="Notice">
+	insert into NOTICE(n_id, n_title, n_content , n_date) values(null, #{title}, #{content}, #{date})
+	</insert>
+	
+	<!-- 删除数据 -->
+	<delete id="delete" parameterType="int">
+	delete from NOTICE where n_id = #{id}
+	</delete>
+	
+	<!-- 查到所有的公告数据 -->
+	<select id="findAll" resultType="Notice">
+		select n_id AS id, n_title AS title, n_content AS content, n_date AS date from NOTICE order by n_date desc
+	</select>
+	
+	<!-- 通过id得到指定的公告 -->
+	<select id="getById" parameterType="Integer" resultType="Notice">
+		select n_id AS id, n_title AS title, n_content AS content, n_date AS date from notice where n_id = #{id}
+	</select>
+	
+	<!-- 修改到数据库中的数据 -->
+	<update id="update" parameterType="Notice">
+		update notice set n_title = #{title}, n_content = #{content}, n_date = #{date}  where n_id = #{id}
+	</update>
+	
+	<!-- 得到所有的记录条数 -->
+	<select id="getCount" resultType="Integer">
+	select count(*) from notice
+	</select>
+	
+	<!-- 分页的实现 -->
+	<select id="getList" parameterType="Page" resultType="Notice">
+	select n_id AS id, n_title AS title, n_content AS content, n_date AS date from notice order by n_date desc limit #{dbIndex}, #{dbNumber}
+	</select>
+</mapper>

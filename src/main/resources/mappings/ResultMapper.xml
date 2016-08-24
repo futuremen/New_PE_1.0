@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.future.hist.persistence.ResultMapper">
+	<insert id="save" parameterType="Result">
+		insert into result(user_id,re_simeple_answer,re_mul_answer,re_fill_answer,re_judge_answer,examPage_id,re_final_score) values(#{user.id},#{simeple_answer},#{mul_answer},#{fill_answer},#{judge_answer},#{examPage.id},#{final_score})
+	</insert>
+</mapper>

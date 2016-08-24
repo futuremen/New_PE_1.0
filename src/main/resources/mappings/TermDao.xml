@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.TermDao">
+	<resultMap type="com.hist.pe.entity.Term" id="term">
+		<id column="term.id" property="id" />
+		<result column="term.start_date" property="start_date" />
+		<result column="term.end_date" property="end_date" />
+		<result column="term.mark" property="mark" />
+		
+		<result column="term.flag" property="flag" />
+	</resultMap>
+
+
+	<sql id="termColumns">
+		id,
+		start_date,
+		end_date,
+		mark,
+		flag
+		
+	</sql>
+
+	<select id="getCurrentTerm" resultMap="term">
+		SELECT
+		<include refid="termColumns"></include>
+		from t_term where flag='1'
+		
+	</select>
+	
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO `t_term` (mark) VALUE (#{mark})
+		
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+		<select id="get" resultMap="term">
+		SELECT
+		<include refid="termColumns"></include>
+		from t_term where id=#{term_id}
+		
+	</select>
+	
+	
+	<delete id="delete">
+		DELETE FROM t_term WHERE id=#{term_id}
+
+	</delete>
+	
+	
+	
+	<select id="getAllTerm" resultMap="term">
+		SELECT
+		<include refid="termColumns"></include>
+		from t_term 
+		
+	</select>
+	
+	<update id="update">
+		UPDATE t_term SET
+		
+		mark=#{mark}
+		
+		where id =#{id}
+		
+	</update>
+	
+	
+	<update id="setCurrentTerm">
+		UPDATE `t_term` SET flag = '1'
+		where id = #{term_id}
+		
+	</update>
+	
+	<update id="cancelCurrentTerm">
+		UPDATE `t_term` SET flag = '0'
+		
+	</update>
+
+
+
+
+</mapper>

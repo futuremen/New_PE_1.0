@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hist.pe.dao.QuestionBankMapper">
+
+    <select id="getAllQB"  resultMap="getAqb">
+        select*from questionbank q where q.qb_id is not null
+	</select>
+    <resultMap type="QuestionsBank" id="getAqb">
+        <id property="id" column="qb_id"/>
+        <result property="name" column="qb_name"/>
+    </resultMap>
+    
+      <!-- write by zhaoshuo -->
+      <!-- 科目类型添加的时候首先查询是否已经存在 -->
+      <select id="findBank" parameterType="String" resultType="QuestionsBank">
+      	select qb_id AS id, qb_name AS name from questionbank where qb_name=#{name}
+      </select>
+      
+      <!-- 科目添加 -->
+      <insert id="addBank" parameterType="QuestionsBank">
+      	insert into questionbank(qb_id, qb_name) values(null, #{name})
+      </insert>
+      <!-- 科目的删除 -->
+      <delete id="deleteSubject" parameterType="Integer">
+      	delete from questionbank where qb_id = #{bankId}
+      </delete>
+      <!-- 根据id查询到指定的科目 -->
+      <select id="findById" parameterType="Integer" resultType="QuestionsBank">
+      select qb_id AS id, qb_name AS name from questionbank where qb_id = #{bankId}
+      </select>
+      <!-- 更新题库 -->
+      <update id="updateBank" parameterType="QuestionsBank">
+      update questionbank set qb_name = #{name} where qb_id = #{id}
+      </update>
+      
+</mapper>
